@@ -1,0 +1,65 @@
+Criação de relacionamentos
+
+Qualquer usuário do sistema pode seguir outro usuário. Quando um usuário A
+segue um usuário B, o usuário A deve aparecer na lista dos seguidores de B, e o
+usuário B deve aparecer na lista dos seguidos de A. As mensagens de todos os
+seguidos por um usuário devem ser agrupadas e publicadas na ordem inversa da
+postagem. Um usuário pode deixar de seguir outro usuário que ele esteja
+seguindo.
+
+> criar-usuario joao
+ok
+> criar-usuario maria
+ok
+> criar-usuario pedro
+ok
+> criar-usuario juliana
+ok
+> seguir joao maria
+ok
+> listar-seguidores maria
+joao
+> listar-seguidos joao
+maria
+> seguir joao pedro
+ok
+> listar-seguidos joao
+pedro
+maria
+> seguir juliana maria
+ok
+> listar-seguidores maria
+juliana
+joao
+> postar-mensagem maria Vou ao cinema hoje
+ok
+> postar-mensagem pedro Comprei um computador novo
+ok
+> postar-mensagem maria Alguém que ir comigo?
+ok
+> listar-mensagens-seguidos joao
+maria Alguém que ir comigo?
+pedro Comprei um computador novo
+maria Vou ao cinema hoje
+> deixar-de-seguir joao maria
+ok
+> listar-seguidos joao
+pedro
+> listar-seguidores maria
+juliana
+> listar-mensagens-seguidos joao
+pedro Comprei um computador novo
+> seguir ana maria
+seguidor-nao-encontrado
+> seguir maria ana
+seguido-nao-encontrado
+> seguir joao joao
+seguidor-e-seguido-sao-iguais
+> seguir joao pedro
+ja-seguindo
+> deixar-de-seguir ana maria
+seguidor-nao-encontrado
+> deixar-de-seguir maria ana
+seguido-nao-encontrado
+> deixar-de-seguir maria joao
+nao-seguindo

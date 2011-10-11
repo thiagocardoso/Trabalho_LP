@@ -1,0 +1,35 @@
+Estatísticas
+
+O sistema deve fornecer o número de mensagens, seguidos e seguidores de um
+usuário.
+
+> criar-usuario joao
+ok
+> criar-usuario maria
+ok
+> criar-usuario pedro
+ok
+> criar-usuario juliana
+ok
+> seguir joao maria
+ok
+> seguir joao pedro
+ok
+> seguir maria joao
+ok
+> seguir pedro joao
+ok
+> seguir juliana joao
+ok
+> postar-mensagem joao Acordei de mau humor!
+ok
+> postar-mensagem joao O trânsito está uma loucura!
+ok
+> postar-mensagem joao Só falta chover!
+ok
+> postar-mensagem joao Alguém vai implicar com o tanto de exclamações?!
+ok
+> listar-estatisticas-usuario joao
+4
+2
+3

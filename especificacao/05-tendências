@@ -1,0 +1,36 @@
+Tendências
+
+Ao postar mensagens, os usuários podem destacar palavras colocando o símbolo #
+na frete da palavra. O sistema deve disponibilizar uma lista das 5 palavras
+mais destacadas (ordenadas pelo quantidade de mensagem com a palavra, e em caso
+de empate, em ordem alfabética). O sistema também deve listar todas as
+mensagens (em ordem inversa de postagem) com uma determinada palavra destacada.
+
+> criar-usuario joao
+ok
+> criar-usuario maria
+ok
+> criar-usuario pedro
+ok
+> postar-mensagem joao Estou assistindo o #brasileirao na #tv.
+ok
+> postar-mensagem maria Acabei de ver a #cozinha dos meus sonhos na #tv!
+ok
+> postar-mensagem maria Pena que custa uma #fortuna...
+ok
+> postar-mensagem pedro Os #políticos no #brasil ganham uma #fortuna.
+ok
+> postar-mensagem joao Acho que vou na #cozinha procurar alguma coisa para comer.
+ok
+> postar-mensagem pedro Só passa desgraça na #tv. 
+ok
+> listar-tendencia
+#tv
+#cozinha
+#fortuna
+#brasil
+#brasileirao
+> listar-mensagens-com-palavra-marcada #tv
+pedro Só passa desgraça na #tv.
+maria Acabei de ver a #cozinha dos meus sonhos na #tv!
+joao Estou assistindo o #brasileirao na #tv.

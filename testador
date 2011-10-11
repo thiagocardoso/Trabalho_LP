@@ -1,0 +1,331 @@
+#!/usr/bin/env python
+# encoding: utf-8
+
+import os
+import socket
+import sys
+import codecs
+
+from random import Random
+from multiprocessing import Pool
+
+HOST = 'localhost'
+PORTA = 1234
+TAM_BUF = 1024
+
+sys.stdout = codecs.getwriter('utf-8')(sys.stdout)
+
+class Caso:
+    def __init__(self, comando, saida_esperada):
+        self.comando = comando
+        self.saida_esperada = saida_esperada
+
+class Teste:
+    def __init__(self, titulo):
+        self.titulo = titulo
+        self.casos = []
+        self.acertos = 0
+
+    def add_caso(self, comando, saida_esperada):
+        self.casos.append(Caso(comando, saida_esperada))
+
+    def __str__(self):
+        r = ""
+        for caso in self.caso:
+            r += "> " + caso.comando
+            r += caso.saida_esperada + "\n"
+        return r
+
+class Resumo:
+    class Resultado:
+        def __init__(self, titulo, casos, acertos):
+            self.titulo = titulo
+            self.casos = casos
+            self.acertos = acertos
+
+    def __init__(self):
+        self.resultados = []
+        self.casos = 0
+        self.acertos = 0
+
+    def add_resultado(self, titulo, casos, acertos):
+        self.casos += casos
+        self.acertos += acertos
+        self.resultados.append(Resumo.Resultado(titulo, casos, acertos))
+
+    def imprime(self):
+        maior_titulo = max(len(r.titulo) for r in self.resultados) + 1
+        for r in self.resultados:
+            print "%s %2d / %2d" % (r.titulo.ljust(maior_titulo), r.acertos, r.casos) 
+        print "%s %2d / %2d" % ("Total".ljust(maior_titulo), self.acertos, self.casos)
+
+def leia_teste(entrada):
+    def e_teste(linha):
+        return linha.startswith("> ")
+
+    teste = Teste(entrada.readline().strip())
+
+    # encontra o primeiro teste
+    linha = entrada.readline()
+    while linha != "" and not e_teste(linha):
+        linha = entrada.readline()
+    
+    while True:
+        if linha == "": break
+
+        comando = linha[2:]
+        saida_esperada = []        
+        linha = entrada.readline()
+        while linha != "" and not e_teste(linha):
+            saida_esperada.append(linha.strip())
+            linha = entrada.readline()
+        teste.add_caso(comando, saida_esperada)
+    return teste
+
+class Testador:
+    def __init__(self, num_processos = 1):
+        self.resumo = Resumo()
+        self.num_processos = num_processos
+
+    def passou_em_todos_os_casos(self):
+        return self.resumo.casos == self.resumo.acertos
+
+    def imprime_resumo(self):
+        self.resumo.imprime()
+   
+    def execute_teste(self, teste):
+        print "== ", teste.titulo, " =="
+        casos = 0
+        acertos = 0
+        pool = Pool(processes=self.num_processos)
+        resultado = pool.map(execute_caso, teste.casos)
+        pool.close()
+        for i in range(len(teste.casos)):
+            casos += 1
+            caso = teste.casos[i]
+            ok, saida = resultado[i]
+            if ok:
+                acertos += 1
+            else:
+                imprime_erro(caso.comando, caso.saida_esperada, saida)
+
+        print acertos, "/", casos
+        print
+        self.resumo.add_resultado(teste.titulo, casos, acertos)          
+
+    def execute_teste_do_arquivo(self, arquivo):
+        try:
+            entrada = codecs.open(arquivo, encoding="utf-8")
+            teste = leia_teste(entrada)
+            entrada.close()
+            self.execute_teste(teste)
+        except IOError as (errno, strerror):
+            print "I/O error({0}): {1}".format(errno, strerror)
+            sys.exit(0)
+
+    def execute_testes_do_diretorio(self, base):
+        print u"--- Iniciando testes funcionais ---"
+        arquivos = os.listdir(base)
+        arquivos.sort()
+        for arquivo in arquivos:
+            envie_comando_para_o_servidor("resetar");
+            arquivo = os.path.join(base, arquivo)
+            self.execute_teste_do_arquivo(arquivo)
+
+def envie_comando_para_o_servidor(comando):
+    s = socket.create_connection((HOST, PORTA))
+    if comando[-1] != "\n":
+        comando += "\n"
+    s.sendall(comando.encode("utf-8"))
+    saida = ""
+    while True:
+        r = s.recv(TAM_BUF)
+        if not r:
+            break;
+        else:
+            saida += r
+    s.close()
+    return saida.strip().decode("utf-8").split('\n');
+
+def imprime_erro(comando, saida_esperada, saida):
+    print "* " + comando,
+    print "  esperado"
+    for s in saida_esperada:
+        print "   " + s
+    print "  obtido"
+    for s in saida:
+        print "   " + s
+    print
+
+def execute_caso(caso):
+    saida = envie_comando_para_o_servidor(caso.comando)
+    return saida == caso.saida_esperada, saida
+
+class Usuario:
+    def __init__(self, nome):
+        self.nome = nome
+        self.seguidos = 0
+        self.seguidores = 0
+        self.mensagens = 0
+
+    def __str__(self):
+        return "(%s %d %d %d)" %(self.nome, self.seguidos, self.seguidores, self.mensagens)
+
+class Hashtag:
+    def __init__(self, palavra):
+        self.palavra = palavra
+        self.ocorrencias = 0
+
+    def __str__(self):
+        return "(%s %d)" % (self.palavra, self.ocorrencias)
+
+    def __lt__(self, other):
+        if self.ocorrencias == other.ocorrencias:
+            return self.palavra < other.palavra
+        else:
+            return other.ocorrencias < self.ocorrencias
+
+class CriadorDeTeste:
+    def __init__(self, seed = 1234):
+        self.random = Random()
+        self.random.seed(seed)
+
+    def criar_usuarios(self, n):
+        return [Usuario(p) for p in self.criar_palavras(n)]
+
+    def criar_palavras(self, n):
+        letras = [chr(c) for c in range(ord('a'), ord('z') + 1)]
+
+        count = 3 # tamanho mínimo das palavras
+        while len(letras) ** count < n:
+            count += 1
+
+        import itertools
+        palavras = []
+        for palavra in itertools.product(letras, repeat=count):
+            if len(palavras) >= n:
+                break
+            palavras.append("".join(palavra))
+
+        self.random.shuffle(palavras)
+        return palavras
+
+    def criar_relacionamentos(self, usuarios, n):
+        if len(usuarios) * min(5, len(usuarios) - 1) < n:
+            raise RuntimeError(u"Não é possível ter tantos relacionamentos")
+        relacionamentos = set()
+        while len(relacionamentos) < n:
+            i = self.random.randint(0, min(5, len(usuarios) - 1))
+            j = self.random.randint(0, len(usuarios) - 1)
+            r = (usuarios[i].nome, usuarios[j].nome)
+            if i != j and r not in relacionamentos:
+                usuarios[i].seguidos +=1
+                usuarios[j].seguidores += 1
+                relacionamentos.add(r)
+        return relacionamentos
+
+    def criar_mensagens(self, usuarios, n):
+        mensagens = []
+        hashs = {}
+        palavras = self.criar_palavras(50) * 10 * n
+        self.random.shuffle(palavras)
+        index = 0
+        for i in range(n):
+            num_palavras = self.random.randint(3, 10)           
+            mensagem = palavras[index:index + num_palavras]
+            index += num_palavras
+            # coloca hash em 30% das palavras da mensagem
+            for j in range(len(mensagem)):
+                if self.random.random() < 0.3:
+                    mensagem[j] = "#" + mensagem[j]
+                    if mensagem[j] not in hashs:
+                        hashs[mensagem[j]] = Hashtag(mensagem[j])
+                    hashs[mensagem[j]].ocorrencias += 1
+
+            mensagem = " ".join(mensagem)
+            usuario = self.random.choice(usuarios[0:5])
+            usuario.mensagens += 1
+            mensagens.append((usuario.nome, mensagem))
+        tags = hashs.values()
+        tags.sort()
+        return mensagens, tags
+
+    def criar(self, num_usuarios, p_relacionamento, num_mensagens):
+       usuarios = self.criar_usuarios(num_usuarios)
+       mensagens, tendencia = self.criar_mensagens(usuarios, num_mensagens)
+       relacionamentos = self.criar_relacionamentos(usuarios, p_relacionamento)
+
+       teste_criar_usuarios = Teste(u"Criação de usuários")
+       for u in usuarios:
+           teste_criar_usuarios.add_caso("criar-usuario " + u.nome, ["ok"])
+
+       teste_postar_mensagens = Teste(u"Postagem de mensagens")
+       for m in mensagens:
+           teste_postar_mensagens.add_caso("postar-mensagem " + m[0] + " " + m[1], ["ok"])
+
+       teste_criar_relacionamentos = Teste(u"Criação de relacionamentos")
+       for r in relacionamentos:
+           teste_criar_relacionamentos.add_caso("seguir " + r[0] + " " + r[1], ["ok"])
+
+       teste_listar_estatisticas = Teste(u"Estatísticas")
+       for u in usuarios:
+           teste_listar_estatisticas.add_caso("listar-estatisticas-usuario " + u.nome, map(str, (u.mensagens, u.seguidos, u.seguidores)))
+
+       teste_listar_tendencia = Teste(u"Tendência")
+       teste_listar_tendencia.add_caso("listar-tendencia\n", [h.palavra for h in tendencia[0:5]])
+
+       return [teste_criar_usuarios,
+               teste_postar_mensagens,
+               teste_criar_relacionamentos,
+               teste_listar_estatisticas,
+               teste_listar_tendencia]
+
+def execute_teste_funcional():
+    testador = Testador()
+    testador.execute_testes_do_diretorio(u'especificacao')
+    testador.imprime_resumo()
+    print
+    return testador.passou_em_todos_os_casos()
+
+def execute_teste_de_concorrencia():
+    import multiprocessing
+    if multiprocessing.cpu_count() == 1:
+        print u"ATENÇÃO: Este computador tem apenas um processador,"
+        print u"         o teste de concorrência pode não ser efetivo!"
+        print u"         Execute os teste de concorrência em um"
+        print u"         computador com múltiplos processadores."
+        print
+
+    print u"--- Iniciando teste de concorrência ---"
+
+    for i in range(1, 8):
+        num_clientes = 2 ** i
+        num_usuarios = num_clientes * 128
+        num_mensagens = num_clientes * 256
+        num_relacionamentos = num_clientes * 512
+        print u"* Configuração do teste"
+        print u"  Clientes       :", num_clientes
+        print u"  Usuários       :", num_usuarios
+        print u"  Mensagens      :", num_mensagens
+        print u"  Relacionamentos:", num_relacionamentos
+        print u"  Criando testes : ",
+        sys.stdout.flush()
+        testador = Testador(num_clientes)
+        criador = CriadorDeTeste()
+        testes = criador.criar(num_usuarios, num_relacionamentos, num_mensagens)
+        print "OK"
+        print
+        envie_comando_para_o_servidor("resetar");
+        for teste in testes:
+            testador.execute_teste(teste)
+
+def main():
+    if execute_teste_funcional():
+        execute_teste_de_concorrencia()
+    else:
+        print u"ATENÇÃO: O TESTE DE CONCORRÊNCIA NÃO FOI EXECUTADO!"
+        print u"O teste de concorrência só é executado quando"
+        print u"todos os testes funcionais estão passando."
+
+if __name__ == "__main__":
+    main()

@@ -1,0 +1,24 @@
+Postagem e publicação de mensagens
+
+Um usuário cadastrado no sistema pode postar mensagens não vazias com até 140
+caracteres. As mensagens postadas por um usuário devem ser publicadas na ordem
+inversa da postagem.
+
+> criar-usuario joao
+ok
+> postar-mensagem joao Eu moro em Maringá
+ok
+> postar-mensagem joao Gosto de jogar futebol com os amigos
+ok
+> postar-mensagem joao Eu torço para o Galo
+ok
+> listar-mensagens-usuario joao
+Eu torço para o Galo
+Gosto de jogar futebol com os amigos
+Eu moro em Maringá
+> postar-mensagem joao    
+mensagem-invalida
+> postar-mensagem joao Vejam este nome: Pedro de Alcântara Francisco António João Carlos Xavier de Paula Miguel Rafael Joaquim José Gonzaga Pascoal Cipriano Serafim
+mensagem-invalida
+> postar-mensagem maria Meus amigos me chamam de Mari
+usuario-nao-encontrado
