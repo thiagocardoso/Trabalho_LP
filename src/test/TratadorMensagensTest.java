@@ -33,13 +33,13 @@ public class TratadorMensagensTest {
 	@Test
 	public void testCriarUsuario(){
 		TratadorMensagens tratMensagens = new TratadorMensagens();
-		assertEquals("Erro ao criar usuario", "OK", tratMensagens.Execute("criar-usuario thiago"));		
+		assertEquals("Erro ao criar usuario", "ok", tratMensagens.Execute("criar-usuario thiago"));		
 	}
 	
 	@Test
 	public void testCriarUsuarioExistente(){
 		TratadorMensagens tratMensagens = new TratadorMensagens();
-		assertEquals("Erro ao criar usuario", "OK", tratMensagens.Execute("criar-usuario usuarioteste"));
+		assertEquals("Erro ao criar usuario", "ok", tratMensagens.Execute("criar-usuario usuarioteste"));
 		assertEquals("Erro ao criar usuario", "usuario-ja-existe", tratMensagens.Execute("criar-usuario usuarioteste"));
 	}
 	

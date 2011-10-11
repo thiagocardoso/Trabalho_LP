@@ -7,7 +7,7 @@ public class TratadorMensagens {
 	private String DoCriarUsuario(String usuario){
 		try{
 			ListaUsuario.getListaUsuario().inserirUsuario(usuario);
-			return "OK";
+			return "ok";
 		}catch(UsuarioExistenteException e){
 			return "usuario-ja-existe";
 		}catch(UsuarioInvalidoException e){
