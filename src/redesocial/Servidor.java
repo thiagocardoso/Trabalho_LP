@@ -7,6 +7,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.List;
 
 public class Servidor {
     private static final int PORTA = 1234;
@@ -23,6 +24,14 @@ public class Servidor {
         } finally {
             socket.close();
         }
+    }   
+    
+    private void enviarRetorno(OutputStream out, List<String> retorno) throws IOException{
+    	int i = 0;
+    	while(i<retorno.size()){
+    		writeLine(out, retorno.get(i));
+    		i++;
+    	}
     }
     
     private void atenderCliente(final Socket cliente) throws IOException {        
@@ -35,7 +44,8 @@ public class Servidor {
         // Você pode criar uma thread para atender cada cliente
         String comando = readLine(cliente.getInputStream());
         //writeLine(cliente.getOutputStream(), "comando recebido: " + comando);
-        writeLine(cliente.getOutputStream(), tratMensagem.Execute(comando.trim()));
+        //writeLine(cliente.getOutputStream(), tratMensagem.Execute(comando.trim()));
+        enviarRetorno(cliente.getOutputStream(), tratMensagem.Execute(comando.trim()));
         cliente.close();
     }
     
