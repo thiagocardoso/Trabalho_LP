@@ -11,6 +11,10 @@ public class ListaUsuario {
 	private ListaUsuario(){		
 	}
 	
+	public void resetar(){
+		listaUsuario = null;
+	}
+	
 	private boolean tamanhoValido(String usuario){
 		return (usuario.length() >= 3)&&(usuario.length() <= 20);
 	}

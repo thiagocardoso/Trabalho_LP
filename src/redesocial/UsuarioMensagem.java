@@ -10,6 +10,10 @@ public class UsuarioMensagem {
 	private UsuarioMensagem(){		
 	}
 	
+	public void resetar(){
+		usuarioMensagem = null;
+	}	
+	
 	public static synchronized UsuarioMensagem getUsuarioMensagem(){
 		if (usuarioMensagem == null){
 			usuarioMensagem = new UsuarioMensagem();

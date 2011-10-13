@@ -57,8 +57,9 @@ public class TratadorMensagens {
 		return retorno;
 	}
 	
-	public List<String> DoListarMensagensUsuario(String usuario){
+	private List<String> DoListarMensagensUsuario(String usuario){
 		List<String> retorno = new ArrayList<String>();
+		//System.out.println(usuario);
 		ListaMensagem lista = UsuarioMensagem.getUsuarioMensagem().getListaMensagem(usuario); 
 		
 		if(lista!=null){
@@ -67,6 +68,11 @@ public class TratadorMensagens {
 			retorno.add("usuario-nao-encontrado");
 		}
 		return retorno;
+	}
+	
+	private void DoResetar(){
+		ListaUsuario.getListaUsuario().resetar();
+		UsuarioMensagem.getUsuarioMensagem().resetar();
 	}
 	
 	public List<String> Execute(String mensagem){
@@ -78,12 +84,16 @@ public class TratadorMensagens {
 		if (mensagem.startsWith("postar-mensagem")){
 			String post = mensagem.replace("postar-mensagem", "");
 			return getRetorno(DoPostarMensagem(post.trim()));
-		}		
-		//listar-mensagens-usuario
+		}	
+		
 		if (mensagem.startsWith("listar-mensagens-usuario")){
-			String usuario = mensagem.replace("postar-mensagem", "");
+			String usuario = mensagem.replace("listar-mensagens-usuario", "");
 			return DoListarMensagensUsuario(usuario.trim());
 		}		
+		
+		if (mensagem.startsWith("resetar")){
+			DoResetar();
+		}
 		return getRetorno("comando-invalido");
 	}
 }
