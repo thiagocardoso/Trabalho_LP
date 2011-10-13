@@ -58,8 +58,7 @@ public class TratadorMensagens {
 	}
 	
 	private List<String> DoListarMensagensUsuario(String usuario){
-		List<String> retorno = new ArrayList<String>();
-		//System.out.println(usuario);
+		List<String> retorno = new ArrayList<String>();		
 		ListaMensagem lista = UsuarioMensagem.getUsuarioMensagem().getListaMensagem(usuario); 
 		
 		if(lista!=null){

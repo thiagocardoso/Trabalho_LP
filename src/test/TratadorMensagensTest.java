@@ -80,4 +80,55 @@ public class TratadorMensagensTest {
 		assertNotSame("Erro ao listar mensagens", "", tratMensagens.Execute("listar-mensagens-usuario thiago").get(0));
 		assertNotSame("Erro ao listar mensagens", "comando-invalido", tratMensagens.Execute("listar-mensagens-usuario thiago").get(0));		
 	}	
+	
+	@Test
+	public void testSeguir(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertEquals("Erro ao executar comando seguir", "ok", tratMensagens.Execute("seguir joao maria").get(0));
+	}
+	
+	@Test
+	public void testListarSeguidores(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertEquals("Erro ao executar comando listar seguidores", "joao", tratMensagens.Execute("listar-seguidores maria").get(0));
+	}
+	
+	@Test
+	public void testListarSeguidos(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertEquals("Erro ao executar comando listar seguidos", "maria", tratMensagens.Execute("listar-seguidos joao").get(0));
+	}	
+		
+	@Test
+	public void testListarMensagensSeguidos(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertEquals("Erro ao listar mensagem dos seguidos", "maria", tratMensagens.Execute("listar-mensagens-seguidos joao").get(0));
+	}		
+	
+	@Test
+	public void testDeixardeSeguir(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertEquals("Erro ao executar comando deixar de seguir", "ok", tratMensagens.Execute("deixar-de-seguir joao maria").get(0));
+	}			
+	
+	@Test
+	public void testListarEstatisticasUsuario(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertNotSame("Erro ao executar comando listar estatisticas do usuario", "", tratMensagens.Execute("listar-estatisticas-usuario joao maria").get(0));
+		assertNotSame("Erro ao executar comando listar estatisticas do usuario", "comando-invalido", tratMensagens.Execute("listar-estatisticas-usuario joao maria").get(0));
+	}				
+
+	@Test
+	public void testListarTendencia(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertNotSame("Erro ao executar comando listar tendencia", "", tratMensagens.Execute("listar-tendencia").get(0));
+		assertNotSame("Erro ao executar comando listar tendencia", "comando-invalido", tratMensagens.Execute("listar-tendencia").get(0));
+	}	
+	
+	@Test
+	public void testListarMensagensComPalavraMarcada(){
+		TratadorMensagens tratMensagens = new TratadorMensagens();
+		assertNotSame("Erro ao executar comando listar mensagens com palavra marcada", "", tratMensagens.Execute("listar-mensagens-com-palavra-marcada #tv").get(0));
+		assertNotSame("Erro ao executar comando listar mensagens com palavra marcada", "comando-invalido", tratMensagens.Execute("listar-mensagens-com-palavra-marcada #tv").get(0));
+	}		
 }
