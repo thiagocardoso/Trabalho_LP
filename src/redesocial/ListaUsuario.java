@@ -1,12 +1,14 @@
 package redesocial;
 
-import java.util.*;
+import java.util.HashMap;
 import redesocial.UsuarioExistenteException;
+import redesocial.Usuario;
 import java.lang.Character;
 
 public class ListaUsuario {
 	private static ListaUsuario listaUsuario = null;	
-	private List<String> list = new ArrayList<String>();
+	//private List<String> list = new ArrayList<String>();
+	private HashMap<String, Usuario> list = new HashMap<String, Usuario>();
 	
 	private ListaUsuario(){		
 	}
@@ -51,10 +53,18 @@ public class ListaUsuario {
 			throw new UsuarioInvalidoException();
 		}
 			
-		list.add(usuario);		
+		//list.add(usuario);
+		list.put(usuario, new Usuario(usuario));
 	}
 	
 	public boolean existeUsuario(String usuario){		
-		return list.indexOf(usuario.trim())>=0;
+		return list.containsKey(usuario.trim());
+	}
+	
+	public Usuario getUsuario(String usuario) throws UsuarioInvalidoException{
+		if(!existeUsuario(usuario)){
+			throw new UsuarioInvalidoException();
+		}
+		return list.get(usuario);
 	}
 }

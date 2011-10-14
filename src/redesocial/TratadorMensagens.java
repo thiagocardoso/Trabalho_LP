@@ -4,7 +4,6 @@ import java.lang.String;
 import java.util.ArrayList;
 import java.util.List;
 import redesocial.ListaUsuario;
-import redesocial.UsuarioMensagem;
 
 public class TratadorMensagens {
 	private String DoCriarUsuario(String usuario){
@@ -42,7 +41,8 @@ public class TratadorMensagens {
 		String usuario = retornaUsuarioDaMensagem(post);
 		String texto = removeUsuarioDaMensagem(usuario, post);
 		try{			
-			UsuarioMensagem.getUsuarioMensagem().adicionar(usuario, texto);
+			//UsuarioMensagem.getUsuarioMensagem().adicionar(usuario, texto);
+			ListaUsuario.getListaUsuario().getUsuario(usuario).adicionarMensagem(texto);
 			return "ok";
 		}catch(UsuarioInvalidoException e){
 			return "usuario-nao-encontrado";
@@ -58,27 +58,92 @@ public class TratadorMensagens {
 	}
 	
 	private List<String> DoListarMensagensUsuario(String usuario){
-		List<String> retorno = new ArrayList<String>();		
-		ListaMensagem lista = UsuarioMensagem.getUsuarioMensagem().getListaMensagem(usuario); 
-		
-		if(lista!=null){
+		List<String> retorno = new ArrayList<String>();
+		ListaMensagem lista = null;
+		try{
+			lista = ListaUsuario.getListaUsuario().getUsuario(usuario).getListaMensagens();
 			lista.fillListaMensagens(retorno);
-		}else{
+		}catch(UsuarioInvalidoException e){
 			retorno.add("usuario-nao-encontrado");
 		}
 		return retorno;
 	}
 	
+	private String DoSeguir(String usuarios){
+		String usuario1 = retornaUsuarioDaMensagem(usuarios);
+		String usuario2 = removeUsuarioDaMensagem(usuario1, usuarios);		
+		try {
+			if(!ListaUsuario.getListaUsuario().existeUsuario(usuario2)){
+				return "seguido-nao-encontrado";
+			}			
+			ListaUsuario.getListaUsuario().getUsuario(usuario1.trim()).seguir(usuario2.trim());
+			return "ok";
+		} catch (UsuarioJaSeguidoException e) {
+			return "ja-seguindo";
+		} catch (UsuarioSeguidoreSeguidoIguaisException e) {
+			return "seguidor-e-seguido-sao-iguais";
+		} catch (UsuarioInvalidoException e) {
+			return "seguidor-nao-encontrado";
+		}		
+	}
+
+	private String DoDeixarDeSeguir(String usuarios){
+		String usuario1 = retornaUsuarioDaMensagem(usuarios);
+		String usuario2 = removeUsuarioDaMensagem(usuario1, usuarios);		
+		try {			
+			if(!ListaUsuario.getListaUsuario().existeUsuario(usuario2.trim())){
+				return "seguido-nao-encontrado";
+			}
+			
+			ListaUsuario.getListaUsuario().getUsuario(usuario1.trim()).deixarDeSeguir(usuario2.trim());
+			return "ok";		
+		} catch (UsuarioInvalidoException e) {
+			return "seguidor-nao-encontrado";
+		} catch (UsuarioSeguidoNaoEncontradoException e) {
+			return "nao-seguindo";
+		}		
+	}		
+	
+	private List<String> DoListarSeguidos(String usuario){
+		List<String> list = null;
+		try {
+			list = ListaUsuario.getListaUsuario().getUsuario(usuario).getListaSeguidos();
+			return list;
+		} catch (UsuarioInvalidoException e) {
+			return getRetorno("usuario-invalido");
+		}
+	}
+	
+	private List<String> DoListarSeguidores(String usuario){
+		List<String> list = null;
+		try {
+			list = ListaUsuario.getListaUsuario().getUsuario(usuario).getListaSeguidores();
+			return list;
+		} catch (UsuarioInvalidoException e) {
+			return getRetorno("usuario-invalido");
+		}
+	}
+	
+	private List<String> DoListarMensagensSeguidos(String usuario){
+		List<String> list = new ArrayList<String>();		
+		try {
+			ListaUsuario.getListaUsuario().getUsuario(usuario).listarMensagensSeguidos(list);
+			return list;
+		} catch (UsuarioInvalidoException e) {
+			return getRetorno("usuario-invalido");
+		}
+		
+	}
+	
 	private void DoResetar(){
 		ListaUsuario.getListaUsuario().resetar();
-		UsuarioMensagem.getUsuarioMensagem().resetar();
 	}
 	
 	public List<String> Execute(String mensagem){
 		if (mensagem.startsWith("criar-usuario")){
 			String usuario = mensagem.replace("criar-usuario", "");			
 			return getRetorno(DoCriarUsuario(usuario.trim()));
-		}				
+		}
 		
 		if (mensagem.startsWith("postar-mensagem")){
 			String post = mensagem.replace("postar-mensagem", "");
@@ -88,6 +153,31 @@ public class TratadorMensagens {
 		if (mensagem.startsWith("listar-mensagens-usuario")){
 			String usuario = mensagem.replace("listar-mensagens-usuario", "");
 			return DoListarMensagensUsuario(usuario.trim());
+		}		
+		
+		if (mensagem.startsWith("seguir")){			
+			String usuarios = mensagem.replace("seguir", "");			
+			return getRetorno(DoSeguir(usuarios.trim()));	
+		}
+		
+		if (mensagem.startsWith("listar-seguidos")){
+			String usuario = mensagem.replace("listar-seguidos", "");
+			return DoListarSeguidos(usuario.trim());	
+		}
+		
+		if (mensagem.startsWith("listar-seguidores")){
+			String usuario = mensagem.replace("listar-seguidores", "");
+			return DoListarSeguidores(usuario.trim());	
+		}
+		
+		if (mensagem.startsWith("deixar-de-seguir")){
+			String usuarios = mensagem.replace("deixar-de-seguir", "");
+			return getRetorno(DoDeixarDeSeguir(usuarios.trim()));
+		}
+
+		if (mensagem.startsWith("listar-mensagens-seguidos")){
+			String usuario = mensagem.replace("listar-mensagens-seguidos", "");
+			return DoListarMensagensSeguidos(usuario.trim());
 		}		
 		
 		if (mensagem.startsWith("resetar")){

@@ -1,6 +1,11 @@
 package test;
 
+import redesocial.ListaUsuario;
 import redesocial.TratadorMensagens;
+import redesocial.UsuarioExistenteException;
+import redesocial.UsuarioInvalidoException;
+import redesocial.UsuarioJaSeguidoException;
+import redesocial.UsuarioSeguidoreSeguidoIguaisException;
 import static org.junit.Assert.*;
 
 import org.junit.After;
@@ -84,12 +89,26 @@ public class TratadorMensagensTest {
 	@Test
 	public void testSeguir(){
 		TratadorMensagens tratMensagens = new TratadorMensagens();
+		try {
+			ListaUsuario.getListaUsuario().inserirUsuario("joao");		
+			ListaUsuario.getListaUsuario().inserirUsuario("maria");
+		} catch (UsuarioExistenteException e) {			
+		} catch (UsuarioInvalidoException e) {			
+		}		
 		assertEquals("Erro ao executar comando seguir", "ok", tratMensagens.Execute("seguir joao maria").get(0));
 	}
 	
 	@Test
 	public void testListarSeguidores(){
 		TratadorMensagens tratMensagens = new TratadorMensagens();
+		
+		try {
+			ListaUsuario.getListaUsuario().getUsuario("joao").seguir("maria");
+		} catch (UsuarioJaSeguidoException e) {			
+		} catch (UsuarioSeguidoreSeguidoIguaisException e) {			
+		} catch (UsuarioInvalidoException e) {		
+		}
+		
 		assertEquals("Erro ao executar comando listar seguidores", "joao", tratMensagens.Execute("listar-seguidores maria").get(0));
 	}
 	
