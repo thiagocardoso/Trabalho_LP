@@ -135,6 +135,16 @@ public class TratadorMensagens {
 		
 	}
 	
+	private List<String> DoListarEstatistica(String usuario){
+		List<String> list = new ArrayList<String>();		
+		try {
+			ListaUsuario.getListaUsuario().getUsuario(usuario).listarEstatisticas(list);
+			return list;
+		} catch (UsuarioInvalidoException e) {
+			return getRetorno("usuario-invalido");
+		}		
+	}	
+	
 	private void DoResetar(){
 		ListaUsuario.getListaUsuario().resetar();
 	}
@@ -179,6 +189,11 @@ public class TratadorMensagens {
 			String usuario = mensagem.replace("listar-mensagens-seguidos", "");
 			return DoListarMensagensSeguidos(usuario.trim());
 		}		
+
+		if (mensagem.startsWith("listar-estatisticas-usuario")){
+			String usuario = mensagem.replace("listar-estatisticas-usuario", "");
+			return DoListarEstatistica(usuario.trim());
+		}				
 		
 		if (mensagem.startsWith("resetar")){
 			DoResetar();

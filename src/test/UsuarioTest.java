@@ -9,6 +9,8 @@ import redesocial.UsuarioJaSeguidoException;
 import redesocial.UsuarioSeguidoNaoEncontradoException;
 import redesocial.UsuarioSeguidorExistenteException;
 import redesocial.UsuarioSeguidoreSeguidoIguaisException;
+
+import java.io.IOException;
 import java.util.List;
 import java.util.ArrayList;
 import static org.junit.Assert.*;
@@ -181,4 +183,46 @@ public class UsuarioTest {
 		} catch (UsuarioSeguidoreSeguidoIguaisException e) {			
 		}		
 	}	
+	
+	@Test
+	public void testGetEstatisticas(){
+		Usuario usuario1 = null;
+		Usuario usuario2 = null;		
+		List<String> list = new ArrayList<String>();
+		try{
+			ListaUsuario.getListaUsuario().inserirUsuario("uuusuario");
+			ListaUsuario.getListaUsuario().inserirUsuario("uuuusuario");
+		} catch (UsuarioExistenteException e) {			
+		} catch (UsuarioInvalidoException e) {		
+		}
+		
+		try{
+			usuario1 = ListaUsuario.getListaUsuario().getUsuario("uuusuario");
+			usuario2 = ListaUsuario.getListaUsuario().getUsuario("uuuusuario");					
+		} catch (UsuarioInvalidoException e) {		
+		}
+			
+		try{
+			usuario1.seguir("uuuusuario");
+			usuario1.adicionarMensagem("teste de mensagem!");
+		
+			usuario1.listarEstatisticas(list);
+			assertEquals("Erro ao retornar estatisticas.", "1", list.get(0));
+			assertEquals("Erro ao retornar estatisticas.", "1", list.get(1));
+			assertEquals("Erro ao retornar estatisticas.", "0", list.get(2));
+		
+			list.clear();			
+			usuario2.listarEstatisticas(list);
+			assertEquals("Erro ao retornar estatisticas.", "0", list.get(0));
+			assertEquals("Erro ao retornar estatisticas.", "0", list.get(1));
+			assertEquals("Erro ao retornar estatisticas.", "1", list.get(2));			
+
+		} catch (MensagemInvalidaException e) {		
+			fail("Erro ao retornar estatisticas: mensagem invalida.");
+		} catch (UsuarioJaSeguidoException e) {
+			fail("Erro ao retornar estatisticas: usuario ja seguido.");
+		} catch (UsuarioSeguidoreSeguidoIguaisException e) {
+			fail("Erro ao retornar estatisticas: erro!.");
+		}		
+	}
 }

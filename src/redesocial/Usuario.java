@@ -126,4 +126,10 @@ public class Usuario {
 			localList.remove(mensagem);
 		}		
 	}
+	
+	public void listarEstatisticas(List<String> list){		
+		list.add(String.valueOf(listaMensagem.tamanhoLista()));
+		list.add(String.valueOf(listaSeguindo.size()));
+		list.add(String.valueOf(listaSeguidores.size()));
+	}
 } 
