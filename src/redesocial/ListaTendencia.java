@@ -60,4 +60,73 @@ public class ListaTendencia {
 	public Tendencia getTendencia(String nome){
 		return list.get(nome);
 	}
+	
+	private String getMelhorTendencia(List<String> lista){
+		int i = 0;
+		String melhor = "";
+		
+		melhor = list.get(lista.get(i)).getNome();
+		i++;
+		while(i<lista.size()){
+			if(list.get(melhor).getListaMensagens().tamanhoLista()<list.get(lista.get(i)).getListaMensagens().tamanhoLista()){
+				melhor = lista.get(i);
+			}else{
+				if(list.get(melhor).getListaMensagens().tamanhoLista()==list.get(lista.get(i)).getListaMensagens().tamanhoLista()){
+					if(melhor.compareTo(lista.get(i))>0){
+						melhor = lista.get(i);
+					}
+				}
+			}
+			i++;
+		}
+		
+		return melhor;
+	}
+	
+	public List<String> listaRankingTendencias(){
+		List<String> temporario = listaTendencias();
+		List<String> retorno = new ArrayList<String>();
+		String atual = "";
+		int i = 0;
+				
+		while((!temporario.isEmpty())&&(i<5)){
+			atual = getMelhorTendencia(temporario);
+			temporario.remove(atual);
+			retorno.add(atual);
+			i++;
+		}		
+		return retorno;
+	}
+	
+	public void limparTendencias(){
+		list = new HashMap<String, Tendencia>();
+	}
+	
+/*	
+	private Mensagem getMaisNova(List<Mensagem> list){
+		Mensagem retorno = null;
+		int i=1;
+		retorno = list.get(0);
+		while(i<list.size()){			
+			if(retorno.getDataCriacao().before(list.get(i).getDataCriacao())){
+				retorno = list.get(i);
+			}
+			i++;
+		}
+		return retorno;
+	}	
+*/	
+	public List<String> listaMensagensTendencia(String tendencia){
+		List<String> retorno = new ArrayList<String>();
+		ListaMensagem listaMsg = null;
+		if(list.containsKey(tendencia)){
+			listaMsg = list.get(tendencia).getListaMensagens();
+			listaMsg.first();
+			while(!listaMsg.eof()){
+				retorno.add(listaMsg.getMensagem().getUsuario() + " "+listaMsg.getMensagem().getTexto());				
+				listaMsg.next();
+			}
+		}
+		return retorno;
+	}
 }

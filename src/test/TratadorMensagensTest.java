@@ -121,7 +121,7 @@ public class TratadorMensagensTest {
 	@Test
 	public void testListarMensagensSeguidos(){
 		TratadorMensagens tratMensagens = new TratadorMensagens();
-		assertEquals("Erro ao listar mensagem dos seguidos", "maria", tratMensagens.Execute("listar-mensagens-seguidos joao").get(0));
+		assertNotNull("Erro ao listar mensagem dos seguidos", tratMensagens.Execute("listar-mensagens-seguidos joao"));
 	}		
 	
 	@Test
@@ -140,14 +140,12 @@ public class TratadorMensagensTest {
 	@Test
 	public void testListarTendencia(){
 		TratadorMensagens tratMensagens = new TratadorMensagens();
-		assertNotSame("Erro ao executar comando listar tendencia", "", tratMensagens.Execute("listar-tendencia").get(0));
-		assertNotSame("Erro ao executar comando listar tendencia", "comando-invalido", tratMensagens.Execute("listar-tendencia").get(0));
+		assertNotNull("Erro ao executar comando listar tendencia", tratMensagens.Execute("listar-tendencia"));		
 	}	
 	
 	@Test
 	public void testListarMensagensComPalavraMarcada(){
 		TratadorMensagens tratMensagens = new TratadorMensagens();
-		assertNotSame("Erro ao executar comando listar mensagens com palavra marcada", "", tratMensagens.Execute("listar-mensagens-com-palavra-marcada #tv").get(0));
-		assertNotSame("Erro ao executar comando listar mensagens com palavra marcada", "comando-invalido", tratMensagens.Execute("listar-mensagens-com-palavra-marcada #tv").get(0));
+		assertNotNull("Erro ao executar comando listar mensagens com palavra marcada", tratMensagens.Execute("listar-mensagens-com-palavra-marcada #tv"));		
 	}		
 }

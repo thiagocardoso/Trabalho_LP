@@ -1,5 +1,6 @@
 package redesocial;
 
+import redesocial.ListaTendencia;
 import redesocial.MensagemInvalidaException;
 import java.util.List;
 import java.util.ArrayList;
@@ -18,10 +19,18 @@ public class ListaMensagem {
 	}
 	
 	public void inserirMensagem(String usuario, String texto) throws MensagemInvalidaException{
+		Mensagem atual = null;
+		
 		if(!mensagemValida(texto)){
 			throw new MensagemInvalidaException();
 		}
-		lista.add(0, getMensagem(usuario, texto));
+		
+		atual = getMensagem(usuario, texto);
+		lista.add(0, atual);
+		
+		if(ListaTendencia.getListaTendencia().possuiTendencia(texto)){
+			ListaTendencia.getListaTendencia().inserirTendencias(atual);
+		}		
 	}
 	
 	public void adicionar(Mensagem msg){

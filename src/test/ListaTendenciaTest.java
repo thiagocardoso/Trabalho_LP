@@ -58,17 +58,51 @@ public class ListaTendenciaTest {
 	
 	@Test
 	public void testNumeroMensagemTendencia() {
-		ListaTendencia lista = ListaTendencia.getListaTendencia();
-		Mensagem msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #vermelho #preto");
+		ListaTendencia lista = ListaTendencia.getListaTendencia();	
 		
-		assertTrue("Erro ao criar tendencias.", lista.possuiTendencia(msg.getTexto()));	
+		lista.limparTendencias();
+		
+		Mensagem msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #preto");		
 		lista.inserirTendencias(msg);
 		
-		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #verde #preto");
+		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #verde");
 		lista.inserirTendencias(msg);
-		assertEquals("Erro ao contar tendencias.", 2, lista.getTendencia("#azul").getListaMensagens().tamanhoLista());
-		assertEquals("Erro ao contar tendencias.", 1, lista.getTendencia("#vermelho").getListaMensagens().tamanhoLista());
-		assertEquals("Erro ao contar tendencias.", 1, lista.getTendencia("#verde").getListaMensagens().tamanhoLista());
-		assertEquals("Erro ao contar tendencias.", 2, lista.getTendencia("#preto").getListaMensagens().tamanhoLista());		
-	}		
+		
+		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #amarelo");
+		lista.inserirTendencias(msg);		
+		
+		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #vermelho");
+		lista.inserirTendencias(msg);		
+		assertEquals("Erro ao contar tendencias.", "#azul", lista.listaRankingTendencias().get(0));
+		assertEquals("Erro ao contar tendencias.", "#amarelo", lista.listaRankingTendencias().get(1));
+		assertEquals("Erro ao contar tendencias.", "#preto", lista.listaRankingTendencias().get(2));	
+		assertEquals("Erro ao contar tendencias.", "#verde", lista.listaRankingTendencias().get(3));	
+		assertEquals("Erro ao contar tendencias.", "#vermelho", lista.listaRankingTendencias().get(4));	
+	}	
+	
+	public void testListarMensagemTendencia() {
+		ListaTendencia lista = ListaTendencia.getListaTendencia();	
+		
+		lista.limparTendencias();
+		
+		Mensagem msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #preto");		
+		lista.inserirTendencias(msg);
+		
+		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #verde");
+		lista.inserirTendencias(msg);
+		
+		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #amarelo");
+		lista.inserirTendencias(msg);		
+		
+		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #vermelho");
+		lista.inserirTendencias(msg);
+		
+		assertEquals("Erro ao listar mensagens das tendencias.", "usuarioteste textoteste #azul #verde", lista.listaMensagensTendencia("#verde").get(0));
+		assertEquals("Erro ao listar mensagens das tendencias.", "usuarioteste textoteste #azul #preto", lista.listaMensagensTendencia("#preto").get(0));
+		
+		assertEquals("Erro ao listar mensagens das tendencias.", "usuarioteste textoteste #azul #vermelho", lista.listaMensagensTendencia("#azul").get(0));
+		assertEquals("Erro ao listar mensagens das tendencias.", "usuarioteste textoteste #azul #amarelo", lista.listaMensagensTendencia("#azul").get(1));
+		assertEquals("Erro ao listar mensagens das tendencias.", "usuarioteste textoteste #azul #verde", lista.listaMensagensTendencia("#azul").get(2));
+		assertEquals("Erro ao listar mensagens das tendencias.", "usuarioteste textoteste #azul #preto", lista.listaMensagensTendencia("#azul").get(3));		
+	}	
 }

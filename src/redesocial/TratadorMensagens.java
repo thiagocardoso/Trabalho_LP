@@ -1,9 +1,11 @@
 package redesocial;
 
 import java.lang.String;
+
 import java.util.ArrayList;
 import java.util.List;
 import redesocial.ListaUsuario;
+import redesocial.ListaTendencia;
 
 public class TratadorMensagens {
 	private String DoCriarUsuario(String usuario){
@@ -40,8 +42,7 @@ public class TratadorMensagens {
 	private String DoPostarMensagem(String post){
 		String usuario = retornaUsuarioDaMensagem(post);
 		String texto = removeUsuarioDaMensagem(usuario, post);
-		try{			
-			//UsuarioMensagem.getUsuarioMensagem().adicionar(usuario, texto);
+		try{						
 			ListaUsuario.getListaUsuario().getUsuario(usuario).adicionarMensagem(texto);
 			return "ok";
 		}catch(UsuarioInvalidoException e){
@@ -131,8 +132,7 @@ public class TratadorMensagens {
 			return list;
 		} catch (UsuarioInvalidoException e) {
 			return getRetorno("usuario-invalido");
-		}
-		
+		}		
 	}
 	
 	private List<String> DoListarEstatistica(String usuario){
@@ -145,8 +145,17 @@ public class TratadorMensagens {
 		}		
 	}	
 	
+	private List<String> DoListarTendencias(){
+		return ListaTendencia.getListaTendencia().listaRankingTendencias();
+	}
+	
+	private List<String> DoListarMensagensTendencia(String tendencia){
+		return ListaTendencia.getListaTendencia().listaMensagensTendencia(tendencia);
+	}
+	
 	private void DoResetar(){
 		ListaUsuario.getListaUsuario().resetar();
+		ListaTendencia.getListaTendencia().limparTendencias();
 	}
 	
 	public List<String> Execute(String mensagem){
@@ -193,8 +202,17 @@ public class TratadorMensagens {
 		if (mensagem.startsWith("listar-estatisticas-usuario")){
 			String usuario = mensagem.replace("listar-estatisticas-usuario", "");
 			return DoListarEstatistica(usuario.trim());
-		}				
+		}	
+				
+		if (mensagem.startsWith("listar-tendencia")){
+			return DoListarTendencias();
+		}
 		
+		if (mensagem.startsWith("listar-mensagens-com-palavra-marcada")){
+			String tendencia = mensagem.replace("listar-mensagens-com-palavra-marcada", "");
+			return DoListarMensagensTendencia(tendencia.trim());
+		}
+				
 		if (mensagem.startsWith("resetar")){
 			DoResetar();
 		}
