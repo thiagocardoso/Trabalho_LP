@@ -24,6 +24,10 @@ public class ListaMensagem {
 		lista.add(0, getMensagem(usuario, texto));
 	}
 	
+	public void adicionar(Mensagem msg){
+		lista.add(0, msg);
+	}
+	
 	public int tamanhoLista(){
 		return lista.size();
 	}
@@ -63,5 +67,15 @@ public class ListaMensagem {
 			
 			next();
 		}
+	}
+	
+	public boolean existeMensagem(Mensagem msg){
+		int i = 0;
+		boolean retorno = false;
+		while((i<lista.size())&&(!retorno)){
+			retorno = (lista.get(i).getUsuario()==msg.getUsuario())&&(lista.get(i).getTexto()==msg.getTexto());			
+			i++;
+		}
+		return retorno;
 	}
 }
