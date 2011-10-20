@@ -131,7 +131,7 @@ public class ListaTendencia {
 			temporario.remove(atual);
 			retorno.add(atual);
 			
-			System.out.print("tendencia: "+ atual +" tamanho: "+ list.get(atual).getListaMensagens().tamanhoLista()+ "\n");
+			//System.out.print("tendencia: "+ atual +" tamanho: "+ list.get(atual).getListaMensagens().tamanhoLista()+ "\n");
 			
 			i++;
 		}		

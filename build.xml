@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- WARNING: Eclipse auto-generated file.
+              Any modifications will be overwritten.
+              To include a user specific buildfile here, simply create one in the same
+              directory with the processing instruction <?eclipse.ant.import?>
+              as the first entry and export the buildfile again. -->
+<project basedir="." default="build" name="Trabalho_LP">
+    <property environment="env"/>
+    <property name="ECLIPSE_HOME" value="../../Software/eclipse"/>
+    <property name="junit.output.dir" value="junit"/>
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.6"/>
+    <property name="source" value="1.6"/>
+    <path id="JUnit 4.libraryclasspath">
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705/junit.jar"/>
+        <pathelement location="${ECLIPSE_HOME}/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+    </path>
+    <path id="Trabalho_LP.classpath">
+        <pathelement location="bin"/>
+        <path refid="JUnit 4.libraryclasspath"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project,create_run_jar" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target>
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="UsuarioMensagemTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.UsuarioMensagemTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="TendenciaTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.TendenciaTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="MensagemTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.MensagemTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="create_run_jar">
+        <jar destfile="/home/thiago/Projetos/Trabalho_LP/dist/rede-social.jar" filesetmanifest="mergewithoutmain">
+            <manifest>
+                <attribute name="Main-Class" value="redesocial.Main"/>
+                <attribute name="Class-Path" value="."/>
+            </manifest>
+            <fileset dir="/home/thiago/Projetos/Trabalho_LP/bin"/>
+            <zipfileset excludes="META-INF/*.SF" src="/home/thiago/Software/eclipse/plugins/org.junit_4.8.2.v4_8_2_v20110321-1705/junit.jar"/>
+            <zipfileset excludes="META-INF/*.SF" src="/home/thiago/Software/eclipse/plugins/org.hamcrest.core_1.1.0.v20090501071000.jar"/>
+        </jar>
+    </target>	
+    <target name="Main">
+        <java classname="redesocial.Main" failonerror="true" fork="yes">
+            <classpath refid="Trabalho_LP.classpath"/>
+        </java>
+    </target>
+    <target name="TratadorMensagensTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.TratadorMensagensTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="ListaUsuarioTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.ListaUsuarioTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="ListaMensagemTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.ListaMensagemTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="ListaTendenciaTest.testListarMensagemTendencia">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.ListaTendenciaTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="TratadorMensagensTest.testCriarUsuario">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.TratadorMensagensTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="ListaTendenciaTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.ListaTendenciaTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="ListaUsuarioTest.testInserirUsuario">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.ListaUsuarioTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="UsuarioTest">
+        <mkdir dir="${junit.output.dir}"/>
+        <junit fork="yes" printsummary="withOutAndErr">
+            <formatter type="xml"/>
+            <test name="test.UsuarioTest" todir="${junit.output.dir}"/>
+            <classpath refid="Trabalho_LP.classpath"/>
+        </junit>
+    </target>
+    <target name="junitreport">
+        <junitreport todir="${junit.output.dir}">
+            <fileset dir="${junit.output.dir}">
+                <include name="TEST-*.xml"/>
+            </fileset>
+            <report format="frames" todir="${junit.output.dir}"/>
+        </junitreport>
+    </target>    
+</project>

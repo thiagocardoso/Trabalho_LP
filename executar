@@ -1,0 +1,11 @@
+#!/bin/bash
+
+if [ "" = "$(which ant)" ]; then
+    echo "O ant não foi encontrado."
+    echo "Se você usa uma distribução baseada no debian,"
+    echo "o ant pode ser instalado com o comando"
+    echo "aptitude install ant"
+    exit
+fi
+
+ant && java -jar dist/rede-social.jar
