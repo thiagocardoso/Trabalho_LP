@@ -12,7 +12,7 @@ import java.util.List;
 public class Servidor {
     private static final int PORTA = 1234;
     
-    private TratadorMensagens tratMensagem = new TratadorMensagens();
+    //private TratadorMensagens tratMensagem = new TratadorMensagens();
     
     public void iniciar() throws IOException {
         ServerSocket socket = new ServerSocket(PORTA);
@@ -34,19 +34,9 @@ public class Servidor {
     	}
     }
     
-    private void atenderCliente(final Socket cliente) throws IOException {        
-        // A ideia basica para atender um cliente é
-        //   - ler comando
-        //   - processar comando
-        //   - escrever resposta
-        // Você deve fazer o controle da concorrência, pois vários
-        // clientes podem ser atendindos concorrentemente
-        // Você pode criar uma thread para atender cada cliente
-        String comando = readLine(cliente.getInputStream());
-        //writeLine(cliente.getOutputStream(), "comando recebido: " + comando);
-        //writeLine(cliente.getOutputStream(), tratMensagem.Execute(comando.trim()));
-        enviarRetorno(cliente.getOutputStream(), tratMensagem.Execute(comando.trim()));
-        cliente.close();
+    private void atenderCliente(final Socket cliente) throws IOException {
+        GerenciaConexao gerente = new GerenciaConexao(cliente);
+        new Thread(gerente).start();        
     }
     
     private static String readLine(InputStream in) throws IOException {

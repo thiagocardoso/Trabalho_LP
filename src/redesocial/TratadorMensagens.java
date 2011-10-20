@@ -7,7 +7,7 @@ import java.util.List;
 import redesocial.ListaUsuario;
 import redesocial.ListaTendencia;
 
-public class TratadorMensagens {
+public class TratadorMensagens{	
 	private String DoCriarUsuario(String usuario){
 		try{
 			ListaUsuario.getListaUsuario().inserirUsuario(usuario);
@@ -217,5 +217,5 @@ public class TratadorMensagens {
 			DoResetar();
 		}
 		return getRetorno("comando-invalido");
-	}
+	}	
 }

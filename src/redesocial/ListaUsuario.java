@@ -1,5 +1,7 @@
 package redesocial;
 
+import java.util.List;
+import java.util.ArrayList;
 import java.util.HashMap;
 import redesocial.UsuarioExistenteException;
 import redesocial.Usuario;
@@ -14,7 +16,8 @@ public class ListaUsuario {
 	}
 	
 	public void resetar(){
-		listaUsuario = null;
+		//listaUsuario = null;
+		list.clear();
 	}
 	
 	private boolean tamanhoValido(String usuario){
@@ -40,6 +43,10 @@ public class ListaUsuario {
 		return listaUsuario;
 	}
 	
+	private synchronized void DoInserirUsuario(Usuario usuario){
+		list.put(usuario.getNome(), usuario);
+	}
+	
 	public void inserirUsuario(String usuario) throws UsuarioExistenteException, UsuarioInvalidoException{	
 		if(existeUsuario(usuario)){
 			throw new UsuarioExistenteException();
@@ -54,7 +61,8 @@ public class ListaUsuario {
 		}
 			
 		//list.add(usuario);
-		list.put(usuario, new Usuario(usuario));
+		//list.put(usuario, new Usuario(usuario));
+		DoInserirUsuario(new Usuario(usuario));
 	}
 	
 	public boolean existeUsuario(String usuario){		
@@ -66,5 +74,12 @@ public class ListaUsuario {
 			throw new UsuarioInvalidoException();
 		}
 		return list.get(usuario);
+	}
+	
+	public List<String> getLista(){
+		List<String> retorno = new ArrayList<String>();
+		retorno.addAll(list.keySet());
+		//System.out.print(list.size());
+		return retorno;
 	}
 }

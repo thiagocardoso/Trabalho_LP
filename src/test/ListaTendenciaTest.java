@@ -1,6 +1,10 @@
 package test;
 
 import redesocial.ListaTendencia;
+import redesocial.ListaUsuario;
+import redesocial.MensagemInvalidaException;
+import redesocial.UsuarioExistenteException;
+import redesocial.UsuarioInvalidoException;
 import static org.junit.Assert.*;
 
 import java.util.Calendar;
@@ -62,31 +66,59 @@ public class ListaTendenciaTest {
 		
 		lista.limparTendencias();
 		
-		Mensagem msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #preto");		
-		lista.inserirTendencias(msg);
+		try {
+			ListaUsuario.getListaUsuario().inserirUsuario("usuarioteste");
+		} catch (UsuarioExistenteException e) {			
+		} catch (UsuarioInvalidoException e) {			
+		}
 		
-		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #verde");
-		lista.inserirTendencias(msg);
+		//Mensagem msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #preto");		
+		//lista.inserirTendencias(msg);
+		try {
+			ListaUsuario.getListaUsuario().getUsuario("usuarioteste").adicionarMensagem("textoteste #azul #preto");
+			ListaUsuario.getListaUsuario().getUsuario("usuarioteste").adicionarMensagem("textoteste #azul #verde");
+			ListaUsuario.getListaUsuario().getUsuario("usuarioteste").adicionarMensagem("textoteste #azul #amarelo");
+			ListaUsuario.getListaUsuario().getUsuario("usuarioteste").adicionarMensagem("textoteste #azul #vermelho");
+			ListaUsuario.getListaUsuario().getUsuario("usuarioteste").adicionarMensagem("textoteste #zzz #vermelho");
+			ListaUsuario.getListaUsuario().getUsuario("usuarioteste").adicionarMensagem("textoteste #zzzz #vermelho");
+			ListaUsuario.getListaUsuario().getUsuario("usuarioteste").adicionarMensagem("textoteste #zzx #amarelo");			
+		} catch (MensagemInvalidaException e) {			
+		} catch (UsuarioInvalidoException e) {			
+		}
 		
-		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #amarelo");
-		lista.inserirTendencias(msg);		
+		//msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #verde");
+		//lista.inserirTendencias(msg);
 		
-		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #vermelho");
-		lista.inserirTendencias(msg);		
+		//msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #amarelo");
+		//lista.inserirTendencias(msg);		
+		
+		//msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #vermelho");
+		//lista.inserirTendencias(msg);
+		
+		//msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #zzz #vermelho");
+		//lista.inserirTendencias(msg);
+		
+		//msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #zzzz #vermelho");
+		//lista.inserirTendencias(msg);	
+		
+		//msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #zzx #amarelo");
+		//lista.inserirTendencias(msg);	
+				
 		assertEquals("Erro ao contar tendencias.", "#azul", lista.listaRankingTendencias().get(0));
-		assertEquals("Erro ao contar tendencias.", "#amarelo", lista.listaRankingTendencias().get(1));
-		assertEquals("Erro ao contar tendencias.", "#preto", lista.listaRankingTendencias().get(2));	
-		assertEquals("Erro ao contar tendencias.", "#verde", lista.listaRankingTendencias().get(3));	
-		assertEquals("Erro ao contar tendencias.", "#vermelho", lista.listaRankingTendencias().get(4));	
+		assertEquals("Erro ao contar tendencias.", "#vermelho", lista.listaRankingTendencias().get(1));
+		assertEquals("Erro ao contar tendencias.", "#amarelo", lista.listaRankingTendencias().get(2));	
+		assertEquals("Erro ao contar tendencias.", "#preto", lista.listaRankingTendencias().get(3));	
+		assertEquals("Erro ao contar tendencias.", "#verde", lista.listaRankingTendencias().get(4));	
 	}	
 	
+	@Test
 	public void testListarMensagemTendencia() {
 		ListaTendencia lista = ListaTendencia.getListaTendencia();	
 		
 		lista.limparTendencias();
 		
 		Mensagem msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #preto");		
-		lista.inserirTendencias(msg);
+		lista.inserirTendencias(msg);	
 		
 		msg = new Mensagem(Calendar.getInstance().getTime(), "usuarioteste", "textoteste #azul #verde");
 		lista.inserirTendencias(msg);

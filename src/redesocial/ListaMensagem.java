@@ -18,7 +18,7 @@ public class ListaMensagem {
 		return new Mensagem(Calendar.getInstance().getTime(), usuario, texto);
 	}
 	
-	public void inserirMensagem(String usuario, String texto) throws MensagemInvalidaException{
+	public synchronized void inserirMensagem(String usuario, String texto) throws MensagemInvalidaException{
 		Mensagem atual = null;
 		
 		if(!mensagemValida(texto)){
@@ -78,7 +78,7 @@ public class ListaMensagem {
 		}
 	}
 	
-	public boolean existeMensagem(Mensagem msg){
+	public boolean existeMensagem(Mensagem msg){		
 		int i = 0;
 		boolean retorno = false;
 		while((i<lista.size())&&(!retorno)){
